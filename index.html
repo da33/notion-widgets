@@ -8,21 +8,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #070b14;
-    --panel: rgba(10, 18, 34, 0.82);
-    --line: rgba(0, 229, 255, 0.28);
-    --cyan: #00e5ff;
-    --magenta: #ff2ec4;
-    --lime: #7dff6a;
-    --text: #d8f4ff;
-    --sub: #5f7f96;
+    --bg: #0b0716;
+    --panel: rgba(24, 15, 45, 0.82);
+    --line: rgba(192, 132, 252, 0.30);
+    --cyan: #c084fc;
+    --magenta: #f472b6;
+    --lime: #a78bfa;
+    --text: #ece4ff;
+    --sub: #8b7aa8;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: "Noto Sans TC", system-ui, sans-serif;
     background:
-      radial-gradient(ellipse 80% 60% at 70% -10%, rgba(0, 229, 255, 0.13), transparent),
-      radial-gradient(ellipse 60% 50% at 10% 110%, rgba(255, 46, 196, 0.10), transparent),
+      radial-gradient(ellipse 80% 60% at 70% -10%, rgba(192, 132, 252, 0.13), transparent),
+      radial-gradient(ellipse 60% 50% at 10% 110%, rgba(244, 114, 182, 0.10), transparent),
       var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -39,8 +39,8 @@
     position: fixed;
     inset: 0;
     background-image:
-      linear-gradient(rgba(0, 229, 255, 0.045) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 229, 255, 0.045) 1px, transparent 1px);
+      linear-gradient(rgba(192, 132, 252, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(192, 132, 252, 0.045) 1px, transparent 1px);
     background-size: 34px 34px;
     pointer-events: none;
   }
@@ -50,7 +50,7 @@
     position: fixed;
     left: 0; right: 0;
     height: 90px;
-    background: linear-gradient(180deg, transparent, rgba(0, 229, 255, 0.055), transparent);
+    background: linear-gradient(180deg, transparent, rgba(192, 132, 252, 0.055), transparent);
     animation: scan 7s linear infinite;
     pointer-events: none;
   }
@@ -89,7 +89,7 @@
     font-size: 11px;
     letter-spacing: 3px;
     color: var(--cyan);
-    text-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
+    text-shadow: 0 0 8px rgba(192, 132, 252, 0.6);
     margin-bottom: 10px;
   }
   .label .dot {
@@ -106,8 +106,8 @@
     font-size: 42px;
     font-weight: 900;
     letter-spacing: 2px;
-    color: #eafcff;
-    text-shadow: 0 0 14px rgba(0, 229, 255, 0.75), 0 0 40px rgba(0, 229, 255, 0.30);
+    color: #f5efff;
+    text-shadow: 0 0 14px rgba(192, 132, 252, 0.75), 0 0 40px rgba(192, 132, 252, 0.30);
     line-height: 1.15;
     font-variant-numeric: tabular-nums;
   }
@@ -115,10 +115,10 @@
   #date { font-family: "Share Tech Mono", monospace; font-size: 12px; color: var(--sub); margin-top: 8px; letter-spacing: 1px; }
 
   /* 天氣 */
-  #wx-emoji { font-size: 34px; line-height: 1.2; filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.4)); }
+  #wx-emoji { font-size: 34px; line-height: 1.2; filter: drop-shadow(0 0 10px rgba(192, 132, 252, 0.4)); }
   #wx-temp {
     font-family: "Orbitron", monospace; font-size: 30px; font-weight: 700;
-    color: #eafcff; text-shadow: 0 0 12px rgba(255, 46, 196, 0.55);
+    color: #f5efff; text-shadow: 0 0 12px rgba(244, 114, 182, 0.55);
   }
   .wx-row { font-family: "Share Tech Mono", monospace; font-size: 12px; color: var(--sub); margin-top: 5px; letter-spacing: 1px; }
   .wx-row b { color: var(--text); font-weight: 500; }
@@ -139,12 +139,12 @@
   .progress-card { flex-basis: 100%; }
   .bar-shell {
     height: 14px; border: 1px solid var(--line); margin-top: 10px;
-    background: rgba(0, 229, 255, 0.05); position: relative; overflow: hidden;
+    background: rgba(192, 132, 252, 0.05); position: relative; overflow: hidden;
   }
   .bar-fill {
     height: 100%; width: 0;
     background: linear-gradient(90deg, var(--cyan), var(--magenta));
-    box-shadow: 0 0 14px rgba(0, 229, 255, 0.6);
+    box-shadow: 0 0 14px rgba(192, 132, 252, 0.6);
     transition: width 1.4s cubic-bezier(.2, .8, .2, 1);
   }
   .bar-fill::after {
@@ -155,7 +155,7 @@
     display: flex; justify-content: space-between; margin-top: 7px;
     font-family: "Share Tech Mono", monospace; font-size: 11px; color: var(--sub); letter-spacing: 1px;
   }
-  .bar-meta b { color: var(--cyan); text-shadow: 0 0 8px rgba(0, 229, 255, 0.5); }
+  .bar-meta b { color: var(--cyan); text-shadow: 0 0 8px rgba(192, 132, 252, 0.5); }
   .hidden { display: none !important; }
 </style>
 </head>
