@@ -3,129 +3,236 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Notion 小工具</title>
+<title>SYSTEM // 小工具</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --text: #37352f;
-    --sub: #787066;
-    --card-bg: rgba(255, 255, 255, 0.72);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --text: #ebebea;
-      --sub: #a5a29b;
-      --card-bg: rgba(37, 37, 37, 0.72);
-    }
-    body { background: linear-gradient(135deg, #2b2735, #1f2a33) !important; }
+    --bg: #070b14;
+    --panel: rgba(10, 18, 34, 0.82);
+    --line: rgba(0, 229, 255, 0.28);
+    --cyan: #00e5ff;
+    --magenta: #ff2ec4;
+    --lime: #7dff6a;
+    --text: #d8f4ff;
+    --sub: #5f7f96;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
-    background: linear-gradient(135deg, #ffe9ec, #e8f0ff 45%, #e6fff3);
+    font-family: "Noto Sans TC", system-ui, sans-serif;
+    background:
+      radial-gradient(ellipse 80% 60% at 70% -10%, rgba(0, 229, 255, 0.13), transparent),
+      radial-gradient(ellipse 60% 50% at 10% 110%, rgba(255, 46, 196, 0.10), transparent),
+      var(--bg);
     color: var(--text);
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 14px;
+    padding: 12px;
+    position: relative;
+    overflow: hidden;
   }
+  /* 背景網格 */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0, 229, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 229, 255, 0.045) 1px, transparent 1px);
+    background-size: 34px 34px;
+    pointer-events: none;
+  }
+  /* 掃描線 */
+  body::after {
+    content: "";
+    position: fixed;
+    left: 0; right: 0;
+    height: 90px;
+    background: linear-gradient(180deg, transparent, rgba(0, 229, 255, 0.055), transparent);
+    animation: scan 7s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes scan { from { top: -120px; } to { top: 110%; } }
+
   .wrap {
     display: flex;
     gap: 14px;
     flex-wrap: wrap;
     justify-content: center;
     width: 100%;
-    max-width: 900px;
+    max-width: 960px;
+    position: relative;
+    z-index: 1;
   }
   .card {
-    flex: 1 1 220px;
-    background: var(--card-bg);
-    backdrop-filter: blur(8px);
-    border-radius: 18px;
-    padding: 20px 22px;
-    box-shadow: 0 4px 18px rgba(80, 60, 120, 0.10);
+    flex: 1 1 230px;
+    min-width: 210px;
+    background: var(--panel);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--line);
+    padding: 18px 20px 16px;
+    position: relative;
     text-align: center;
-    min-width: 200px;
+    clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
   }
-  .label { font-size: 12px; letter-spacing: 2px; color: var(--sub); margin-bottom: 8px; }
-  /* clock */
-  #time { font-size: 44px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; }
-  #date { font-size: 14px; color: var(--sub); margin-top: 6px; }
-  /* weather */
-  #wx-emoji { font-size: 40px; line-height: 1.2; }
-  #wx-temp { font-size: 30px; font-weight: 700; }
-  #wx-desc { font-size: 14px; color: var(--sub); margin-top: 4px; }
-  #wx-range { font-size: 12px; color: var(--sub); margin-top: 2px; }
-  /* quote */
-  #quote { font-size: 15px; line-height: 1.8; text-align: left; }
-  #quote-src { font-size: 12px; color: var(--sub); margin-top: 8px; text-align: right; }
+  /* HUD 四角 */
+  .corner { position: absolute; width: 12px; height: 12px; border-color: var(--cyan); border-style: solid; opacity: .9; }
+  .tl { top: 4px; left: 4px; border-width: 2px 0 0 2px; }
+  .tr { top: 4px; right: 4px; border-width: 2px 2px 0 0; }
+  .bl { bottom: 4px; left: 4px; border-width: 0 0 2px 2px; }
+  .br { bottom: 4px; right: 4px; border-width: 0 2px 2px 0; }
+
+  .label {
+    font-family: "Share Tech Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--cyan);
+    text-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
+    margin-bottom: 10px;
+  }
+  .label .dot {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--lime); margin-right: 6px; vertical-align: 1px;
+    box-shadow: 0 0 6px var(--lime);
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+
+  /* 時鐘 */
+  #time {
+    font-family: "Orbitron", monospace;
+    font-size: 42px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #eafcff;
+    text-shadow: 0 0 14px rgba(0, 229, 255, 0.75), 0 0 40px rgba(0, 229, 255, 0.30);
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+  }
+  #time .sec { font-size: 20px; color: var(--cyan); }
+  #date { font-family: "Share Tech Mono", monospace; font-size: 12px; color: var(--sub); margin-top: 8px; letter-spacing: 1px; }
+
+  /* 天氣 */
+  #wx-emoji { font-size: 34px; line-height: 1.2; filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.4)); }
+  #wx-temp {
+    font-family: "Orbitron", monospace; font-size: 30px; font-weight: 700;
+    color: #eafcff; text-shadow: 0 0 12px rgba(255, 46, 196, 0.55);
+  }
+  .wx-row { font-family: "Share Tech Mono", monospace; font-size: 12px; color: var(--sub); margin-top: 5px; letter-spacing: 1px; }
+  .wx-row b { color: var(--text); font-weight: 500; }
+
+  /* 名言(終端機)*/
+  .term { text-align: left; }
+  #quote { font-size: 14px; line-height: 1.9; min-height: 3.8em; }
+  #quote .prompt { color: var(--lime); font-family: "Share Tech Mono", monospace; }
+  .cursor {
+    display: inline-block; width: 8px; height: 16px; background: var(--cyan);
+    vertical-align: -2px; margin-left: 3px;
+    box-shadow: 0 0 8px var(--cyan);
+    animation: blink 1s step-end infinite;
+  }
+  #quote-src { font-family: "Share Tech Mono", monospace; font-size: 11px; color: var(--sub); margin-top: 6px; text-align: right; }
+
+  /* 年度進度 */
+  .progress-card { flex-basis: 100%; }
+  .bar-shell {
+    height: 14px; border: 1px solid var(--line); margin-top: 10px;
+    background: rgba(0, 229, 255, 0.05); position: relative; overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%; width: 0;
+    background: linear-gradient(90deg, var(--cyan), var(--magenta));
+    box-shadow: 0 0 14px rgba(0, 229, 255, 0.6);
+    transition: width 1.4s cubic-bezier(.2, .8, .2, 1);
+  }
+  .bar-fill::after {
+    content: ""; position: absolute; inset: 0;
+    background: repeating-linear-gradient(-45deg, transparent 0 8px, rgba(255, 255, 255, 0.12) 8px 16px);
+  }
+  .bar-meta {
+    display: flex; justify-content: space-between; margin-top: 7px;
+    font-family: "Share Tech Mono", monospace; font-size: 11px; color: var(--sub); letter-spacing: 1px;
+  }
+  .bar-meta b { color: var(--cyan); text-shadow: 0 0 8px rgba(0, 229, 255, 0.5); }
   .hidden { display: none !important; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="card" id="card-clock">
-    <div class="label">現在時間</div>
+    <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+    <div class="label"><span class="dot"></span>TIME // 現在時間</div>
     <div id="time">--:--</div>
-    <div id="date">載入中…</div>
+    <div id="date">SYNCING...</div>
   </div>
   <div class="card" id="card-weather">
-    <div class="label">桃園天氣</div>
-    <div id="wx-emoji">⏳</div>
+    <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+    <div class="label"><span class="dot"></span>WEATHER // 桃園</div>
+    <div id="wx-emoji">⛅</div>
     <div id="wx-temp">--°</div>
-    <div id="wx-desc">載入中…</div>
-    <div id="wx-range"></div>
+    <div class="wx-row" id="wx-desc">CONNECTING...</div>
+    <div class="wx-row" id="wx-range"></div>
   </div>
-  <div class="card" id="card-quote">
-    <div class="label">今日一句</div>
-    <div id="quote">…</div>
+  <div class="card term" id="card-quote">
+    <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+    <div class="label"><span class="dot"></span>DAILY.LOG // 今日一句</div>
+    <div id="quote"><span class="prompt">&gt;_ </span><span id="qtext"></span><span class="cursor"></span></div>
     <div id="quote-src"></div>
+  </div>
+  <div class="card progress-card" id="card-progress">
+    <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+    <div class="label" style="text-align:left"><span class="dot"></span>YEAR.PROGRESS // 年度進度</div>
+    <div class="bar-shell"><div class="bar-fill" id="bar"></div></div>
+    <div class="bar-meta"><span id="bar-days"></span><b id="bar-pct">0%</b></div>
   </div>
 </div>
 <script>
-  // ?w=clock / weather / quote 可單獨顯示某一張卡
+  // ?w=clock / weather / quote / progress 可單獨顯示
   const w = new URLSearchParams(location.search).get("w");
   if (w) {
-    for (const id of ["clock", "weather", "quote"]) {
+    for (const id of ["clock", "weather", "quote", "progress"]) {
       if (id !== w) document.getElementById("card-" + id).classList.add("hidden");
     }
   }
 
   // ── 時鐘 ──
-  const WEEK = ["日", "一", "二", "三", "四", "五", "六"];
+  const WEEK = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  const WEEKZH = ["日", "一", "二", "三", "四", "五", "六"];
   function tick() {
     const n = new Date();
-    const hh = String(n.getHours()).padStart(2, "0");
-    const mm = String(n.getMinutes()).padStart(2, "0");
-    document.getElementById("time").textContent = hh + ":" + mm;
+    const p = x => String(x).padStart(2, "0");
+    document.getElementById("time").innerHTML =
+      p(n.getHours()) + ":" + p(n.getMinutes()) + '<span class="sec">:' + p(n.getSeconds()) + "</span>";
     document.getElementById("date").textContent =
-      `${n.getFullYear()} 年 ${n.getMonth() + 1} 月 ${n.getDate()} 日・星期${WEEK[n.getDay()]}`;
+      `${n.getFullYear()}.${p(n.getMonth() + 1)}.${p(n.getDate())} ${WEEK[n.getDay()]} 週${WEEKZH[n.getDay()]}`;
   }
   tick();
   setInterval(tick, 1000);
 
   // ── 天氣(open-meteo,免金鑰)──
   const WX = {
-    0: ["☀️", "晴朗"], 1: ["🌤️", "大致晴朗"], 2: ["⛅", "多雲時晴"], 3: ["☁️", "陰天"],
-    45: ["🌫️", "有霧"], 48: ["🌫️", "霧凇"],
-    51: ["🌦️", "毛毛雨"], 53: ["🌦️", "小雨"], 55: ["🌧️", "細雨"],
-    61: ["🌧️", "小雨"], 63: ["🌧️", "中雨"], 65: ["🌧️", "大雨"],
-    80: ["🌦️", "陣雨"], 81: ["🌧️", "陣雨"], 82: ["⛈️", "強陣雨"],
-    95: ["⛈️", "雷雨"], 96: ["⛈️", "雷雨夾冰雹"], 99: ["⛈️", "強雷雨"]
+    0: ["☀️", "CLEAR 晴朗"], 1: ["🌤️", "FAIR 大致晴朗"], 2: ["⛅", "P.CLOUDY 多雲時晴"], 3: ["☁️", "CLOUDY 陰天"],
+    45: ["🌫️", "FOG 有霧"], 48: ["🌫️", "FOG 霧凇"],
+    51: ["🌦️", "DRIZZLE 毛毛雨"], 53: ["🌦️", "DRIZZLE 小雨"], 55: ["🌧️", "DRIZZLE 細雨"],
+    61: ["🌧️", "RAIN 小雨"], 63: ["🌧️", "RAIN 中雨"], 65: ["🌧️", "RAIN 大雨"],
+    80: ["🌦️", "SHOWER 陣雨"], 81: ["🌧️", "SHOWER 陣雨"], 82: ["⛈️", "STORM 強陣雨"],
+    95: ["⛈️", "T-STORM 雷雨"], 96: ["⛈️", "T-STORM 雷雨"], 99: ["⛈️", "T-STORM 強雷雨"]
   };
   fetch("https://api.open-meteo.com/v1/forecast?latitude=24.96&longitude=121.22&current=temperature_2m,weather_code,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min&timezone=Asia%2FTaipei&forecast_days=1")
     .then(r => r.json())
     .then(d => {
-      const [emoji, desc] = WX[d.current.weather_code] || ["🌡️", "—"];
+      const [emoji, desc] = WX[d.current.weather_code] || ["🌡️", "N/A"];
       document.getElementById("wx-emoji").textContent = emoji;
       document.getElementById("wx-temp").textContent = Math.round(d.current.temperature_2m) + "°C";
-      document.getElementById("wx-desc").textContent = desc + "・濕度 " + d.current.relative_humidity_2m + "%";
+      document.getElementById("wx-desc").innerHTML = "<b>" + desc + "</b> RH:" + d.current.relative_humidity_2m + "%";
       document.getElementById("wx-range").textContent =
-        "↑" + Math.round(d.daily.temperature_2m_max[0]) + "°  ↓" + Math.round(d.daily.temperature_2m_min[0]) + "°";
+        "MAX " + Math.round(d.daily.temperature_2m_max[0]) + "° / MIN " + Math.round(d.daily.temperature_2m_min[0]) + "°";
     })
-    .catch(() => { document.getElementById("wx-desc").textContent = "暫時抓不到天氣"; });
+    .catch(() => { document.getElementById("wx-desc").textContent = "SIGNAL LOST"; });
 
-  // ── 每日一句(依日期輪播)──
+  // ── 每日一句(打字機效果)──
   const QUOTES = [
     ["把入口整理好,每天打開的第一眼就會想繼續用。", ""],
     ["先完成,再完美。", ""],
@@ -133,7 +240,7 @@
     ["今天的你,是過去每一天的總和。", ""],
     ["慢慢來,比較快。", ""],
     ["行動會帶來靈感,而不是等靈感才行動。", ""],
-    ["每天進步 1%,一年後就是 37 倍。", "《原子習慣》"],
+    ["每天進步 1%,一年後就是 37 倍。", "ATOMIC HABITS"],
     ["你不需要很厲害才能開始,但你需要開始才會很厲害。", ""],
     ["整理空間,就是整理思緒。", ""],
     ["休息不是浪費時間,是為了走更長的路。", ""],
@@ -158,11 +265,26 @@
     ["願你忙得有價值,閒得有滋味。", ""],
     ["星光不問趕路人,時光不負有心人。", ""]
   ];
-  const start = new Date(new Date().getFullYear(), 0, 0);
-  const day = Math.floor((Date.now() - start) / 86400000);
-  const [q, src] = QUOTES[day % QUOTES.length];
-  document.getElementById("quote").textContent = "「" + q + "」";
-  document.getElementById("quote-src").textContent = src ? "—— " + src : "";
+  const yStart = new Date(new Date().getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((Date.now() - yStart) / 86400000);
+  const [q, src] = QUOTES[dayOfYear % QUOTES.length];
+  const qEl = document.getElementById("qtext");
+  let qi = 0;
+  (function type() {
+    if (qi <= q.length) {
+      qEl.textContent = q.slice(0, qi++);
+      setTimeout(type, 65);
+    }
+  })();
+  document.getElementById("quote-src").textContent = src ? "// " + src : "";
+
+  // ── 年度進度 ──
+  const year = new Date().getFullYear();
+  const total = (Date.UTC(year + 1, 0, 1) - Date.UTC(year, 0, 1)) / 86400000;
+  const pct = Math.round(dayOfYear / total * 1000) / 10;
+  document.getElementById("bar-days").textContent = year + " // DAY " + dayOfYear + " / " + total;
+  document.getElementById("bar-pct").textContent = pct + "%";
+  requestAnimationFrame(() => setTimeout(() => { document.getElementById("bar").style.width = pct + "%"; }, 100));
 </script>
 </body>
 </html>
