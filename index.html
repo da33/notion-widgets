@@ -157,6 +157,56 @@
   }
   .bar-meta b { color: var(--cyan); text-shadow: 0 0 8px rgba(192, 132, 252, 0.5); }
   .hidden { display: none !important; }
+
+  /* ── 主題:黑白極簡 ?theme=mono ── */
+  html[data-theme="mono"] {
+    --bg: #0a0a0a; --panel: rgba(20, 20, 20, 0.85); --line: rgba(255, 255, 255, 0.22);
+    --cyan: #ffffff; --magenta: #bbbbbb; --lime: #dddddd; --text: #f2f2f2; --sub: #8a8a8a;
+  }
+  html[data-theme="mono"] body { background: #0a0a0a; }
+  html[data-theme="mono"] body::before {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  }
+  html[data-theme="mono"] body::after { background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.045), transparent); }
+  html[data-theme="mono"] .label { text-shadow: none; }
+  html[data-theme="mono"] #time { color: #ffffff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.35); }
+  html[data-theme="mono"] #wx-temp { color: #ffffff; text-shadow: none; }
+  html[data-theme="mono"] #wx-emoji { filter: grayscale(1) drop-shadow(0 0 8px rgba(255, 255, 255, 0.25)); }
+  html[data-theme="mono"] .bar-fill { background: linear-gradient(90deg, #ffffff, #888888); box-shadow: 0 0 10px rgba(255, 255, 255, 0.35); }
+  html[data-theme="mono"] .bar-meta b { text-shadow: none; }
+  html[data-theme="mono"] .cursor { box-shadow: none; }
+  html[data-theme="mono"] .label .dot { background: #ffffff; box-shadow: 0 0 5px rgba(255,255,255,.6); }
+
+  /* ── 主題:奶油雜誌 ?theme=cream ── */
+  html[data-theme="cream"] {
+    --bg: #faf6ef; --panel: rgba(255, 255, 255, 0.82); --line: rgba(166, 138, 106, 0.38);
+    --cyan: #8a6d4f; --magenta: #b98a5e; --lime: #a58d6f; --text: #4a3f33; --sub: #a3907a;
+  }
+  html[data-theme="cream"] body {
+    background:
+      radial-gradient(ellipse 80% 60% at 70% -10%, rgba(224, 197, 165, 0.35), transparent),
+      radial-gradient(ellipse 60% 50% at 10% 110%, rgba(238, 218, 197, 0.4), transparent),
+      #faf6ef;
+  }
+  html[data-theme="cream"] body::before {
+    background-image:
+      linear-gradient(rgba(166, 138, 106, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(166, 138, 106, 0.07) 1px, transparent 1px);
+  }
+  html[data-theme="cream"] body::after { display: none; }
+  html[data-theme="cream"] .card { box-shadow: 0 6px 22px rgba(150, 120, 90, 0.13); border-radius: 4px; clip-path: none; }
+  html[data-theme="cream"] .corner { border-color: #b98a5e; }
+  html[data-theme="cream"] .label { text-shadow: none; font-weight: 400; }
+  html[data-theme="cream"] #time { color: #4a3f33; text-shadow: none; font-weight: 700; }
+  html[data-theme="cream"] #wx-temp { color: #4a3f33; text-shadow: none; }
+  html[data-theme="cream"] #wx-emoji { filter: none; }
+  html[data-theme="cream"] .bar-shell { background: rgba(166, 138, 106, 0.10); }
+  html[data-theme="cream"] .bar-fill { background: linear-gradient(90deg, #c9a97e, #8a6d4f); box-shadow: none; }
+  html[data-theme="cream"] .bar-meta b { text-shadow: none; }
+  html[data-theme="cream"] .cursor { box-shadow: none; }
+  html[data-theme="cream"] .label .dot { background: #b98a5e; box-shadow: none; }
 </style>
 </head>
 <body>
@@ -189,6 +239,10 @@
   </div>
 </div>
 <script>
+  // ?theme=mono / cream 切換主題
+  const themeParam = new URLSearchParams(location.search).get("theme");
+  if (themeParam) document.documentElement.dataset.theme = themeParam;
+
   // ?w=clock / weather / quote / progress 可單獨顯示
   const w = new URLSearchParams(location.search).get("w");
   if (w) {
