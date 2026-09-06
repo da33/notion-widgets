@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notion 小工具</title>
+<style>
+  :root {
+    --text: #37352f;
+    --sub: #787066;
+    --card-bg: rgba(255, 255, 255, 0.72);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --text: #ebebea;
+      --sub: #a5a29b;
+      --card-bg: rgba(37, 37, 37, 0.72);
+    }
+    body { background: linear-gradient(135deg, #2b2735, #1f2a33) !important; }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+    background: linear-gradient(135deg, #ffe9ec, #e8f0ff 45%, #e6fff3);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+  }
+  .wrap {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 900px;
+  }
+  .card {
+    flex: 1 1 220px;
+    background: var(--card-bg);
+    backdrop-filter: blur(8px);
+    border-radius: 18px;
+    padding: 20px 22px;
+    box-shadow: 0 4px 18px rgba(80, 60, 120, 0.10);
+    text-align: center;
+    min-width: 200px;
+  }
+  .label { font-size: 12px; letter-spacing: 2px; color: var(--sub); margin-bottom: 8px; }
+  /* clock */
+  #time { font-size: 44px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  #date { font-size: 14px; color: var(--sub); margin-top: 6px; }
+  /* weather */
+  #wx-emoji { font-size: 40px; line-height: 1.2; }
+  #wx-temp { font-size: 30px; font-weight: 700; }
+  #wx-desc { font-size: 14px; color: var(--sub); margin-top: 4px; }
+  #wx-range { font-size: 12px; color: var(--sub); margin-top: 2px; }
+  /* quote */
+  #quote { font-size: 15px; line-height: 1.8; text-align: left; }
+  #quote-src { font-size: 12px; color: var(--sub); margin-top: 8px; text-align: right; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card" id="card-clock">
+    <div class="label">現在時間</div>
+    <div id="time">--:--</div>
+    <div id="date">載入中…</div>
+  </div>
+  <div class="card" id="card-weather">
+    <div class="label">桃園天氣</div>
+    <div id="wx-emoji">⏳</div>
+    <div id="wx-temp">--°</div>
+    <div id="wx-desc">載入中…</div>
+    <div id="wx-range"></div>
+  </div>
+  <div class="card" id="card-quote">
+    <div class="label">今日一句</div>
+    <div id="quote">…</div>
+    <div id="quote-src"></div>
+  </div>
+</div>
+<script>
+  // ?w=clock / weather / quote 可單獨顯示某一張卡
+  const w = new URLSearchParams(location.search).get("w");
+  if (w) {
+    for (const id of ["clock", "weather", "quote"]) {
+      if (id !== w) document.getElementById("card-" + id).classList.add("hidden");
+    }
+  }
+
+  // ── 時鐘 ──
+  const WEEK = ["日", "一", "二", "三", "四", "五", "六"];
+  function tick() {
+    const n = new Date();
+    const hh = String(n.getHours()).padStart(2, "0");
+    const mm = String(n.getMinutes()).padStart(2, "0");
+    document.getElementById("time").textContent = hh + ":" + mm;
+    document.getElementById("date").textContent =
+      `${n.getFullYear()} 年 ${n.getMonth() + 1} 月 ${n.getDate()} 日・星期${WEEK[n.getDay()]}`;
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  // ── 天氣(open-meteo,免金鑰)──
+  const WX = {
+    0: ["☀️", "晴朗"], 1: ["🌤️", "大致晴朗"], 2: ["⛅", "多雲時晴"], 3: ["☁️", "陰天"],
+    45: ["🌫️", "有霧"], 48: ["🌫️", "霧凇"],
+    51: ["🌦️", "毛毛雨"], 53: ["🌦️", "小雨"], 55: ["🌧️", "細雨"],
+    61: ["🌧️", "小雨"], 63: ["🌧️", "中雨"], 65: ["🌧️", "大雨"],
+    80: ["🌦️", "陣雨"], 81: ["🌧️", "陣雨"], 82: ["⛈️", "強陣雨"],
+    95: ["⛈️", "雷雨"], 96: ["⛈️", "雷雨夾冰雹"], 99: ["⛈️", "強雷雨"]
+  };
+  fetch("https://api.open-meteo.com/v1/forecast?latitude=24.96&longitude=121.22&current=temperature_2m,weather_code,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min&timezone=Asia%2FTaipei&forecast_days=1")
+    .then(r => r.json())
+    .then(d => {
+      const [emoji, desc] = WX[d.current.weather_code] || ["🌡️", "—"];
+      document.getElementById("wx-emoji").textContent = emoji;
+      document.getElementById("wx-temp").textContent = Math.round(d.current.temperature_2m) + "°C";
+      document.getElementById("wx-desc").textContent = desc + "・濕度 " + d.current.relative_humidity_2m + "%";
+      document.getElementById("wx-range").textContent =
+        "↑" + Math.round(d.daily.temperature_2m_max[0]) + "°  ↓" + Math.round(d.daily.temperature_2m_min[0]) + "°";
+    })
+    .catch(() => { document.getElementById("wx-desc").textContent = "暫時抓不到天氣"; });
+
+  // ── 每日一句(依日期輪播)──
+  const QUOTES = [
+    ["把入口整理好,每天打開的第一眼就會想繼續用。", ""],
+    ["先完成,再完美。", ""],
+    ["最困難的不是開始,而是持續。", ""],
+    ["今天的你,是過去每一天的總和。", ""],
+    ["慢慢來,比較快。", ""],
+    ["行動會帶來靈感,而不是等靈感才行動。", ""],
+    ["每天進步 1%,一年後就是 37 倍。", "《原子習慣》"],
+    ["你不需要很厲害才能開始,但你需要開始才會很厲害。", ""],
+    ["整理空間,就是整理思緒。", ""],
+    ["休息不是浪費時間,是為了走更長的路。", ""],
+    ["做重要的事,而不是緊急的事。", ""],
+    ["紀錄下來的,才不會被遺忘。", ""],
+    ["與其焦慮未來,不如把今天過好。", ""],
+    ["小步快跑,勝過原地計畫。", ""],
+    ["專注,是這個時代最稀缺的能力。", ""],
+    ["允許自己不完美,才走得遠。", ""],
+    ["最好的時機是十年前,其次是現在。", ""],
+    ["把大事拆小,把小事做完。", ""],
+    ["靈感是給正在動手的人的獎勵。", ""],
+    ["生活需要儀式感,工作需要節奏感。", ""],
+    ["能被寫下來的煩惱,就已經解決了一半。", ""],
+    ["別跟別人比,跟昨天的自己比。", ""],
+    ["保持好奇,世界就永遠有趣。", ""],
+    ["累的時候,抬頭看看天空。", ""],
+    ["溫柔對待自己,才有力氣溫柔對待世界。", ""],
+    ["今天也要好好吃飯。", ""],
+    ["深呼吸,一件一件來。", ""],
+    ["所有的努力,時間都看得見。", ""],
+    ["願你忙得有價值,閒得有滋味。", ""],
+    ["星光不問趕路人,時光不負有心人。", ""]
+  ];
+  const start = new Date(new Date().getFullYear(), 0, 0);
+  const day = Math.floor((Date.now() - start) / 86400000);
+  const [q, src] = QUOTES[day % QUOTES.length];
+  document.getElementById("quote").textContent = "「" + q + "」";
+  document.getElementById("quote-src").textContent = src ? "—— " + src : "";
+</script>
+</body>
+</html>
